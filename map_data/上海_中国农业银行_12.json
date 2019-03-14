@@ -1,0 +1,22 @@
+{
+    "status":0,
+    "message":"ok",
+    "total":400,
+    "results":[
+        {
+            "name":"中国农业银行(洋泾支行)",
+            "location":{
+                "lat":31.248038,
+                "lng":121.565304
+            },
+            "address":"上海市浦东新区张杨路2580号",
+            "province":"上海市",
+            "city":"上海市",
+            "area":"浦东新区",
+            "street_id":"d24e48eb1b107ab6afee7a5b",
+            "telephone":"(021)58334255",
+            "detail":1,
+            "uid":"d24e48eb1b107ab6afee7a5b"
+        }
+    ]
+}
