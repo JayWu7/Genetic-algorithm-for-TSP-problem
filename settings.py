@@ -54,6 +54,11 @@ parameters = {
 # 存放地图json数据目录
 STORE_DIRECTORY = './map_data'
 
-
-#遗传算法进化的次数
+# 遗传算法进化的次数
 EVOLUTION_TIMES = 100
+
+#连续多少次最佳路线相同，则认为找到了最优解，退出进化
+STOP_TIMES = 15
+
+# 变异概率
+VARIATION_RATE = 0.3
