@@ -75,8 +75,9 @@ class Solution():  # 一个Solution实例对应一个染色体
 
         fir_dis = self._get_d_start(first_atm)  # 从出发点到第一个atm的距离
         la_dis = self._get_d_start(last_atm)  # 从最后一个atm又回到出发点的距离
-
-        distance = fir_dis + sum(self._generate_path(code)) + la_dis
+        final_ord = self.orders[self.code[-1]]  # 最后一个订单 两atm之间的距离
+        final_ord_dis = final_ord.offset.get_distance_AB(last_atm)
+        distance = fir_dis + sum(self._generate_path(code)) + la_dis + final_ord_dis
         if flag:
             self.__distance = distance
         else:
@@ -91,7 +92,7 @@ class Solution():  # 一个Solution实例对应一个染色体
         lng1 = atm.location['lng']
         return get_distance_hav(lat0, lng0, lat1, lng1)
 
-    def _get_d(self, A, B):  # 计算两个'订单'之间的距离,一共三段 A0-A1-B0-B1
+    def _get_d(self, A, B):  # 计算两个'订单'之间的距离
         A0_A1 = A.offset.get_distance_AB(A.destination)
         A1_B0 = A.destination.get_distance_AB(B.offset)
         B0_B1 = B.offset.get_distance_AB(B.destination)
@@ -198,16 +199,21 @@ def tsp(orders, start_point):
             best_dis, equal_time = nat.best.get_distance(), 0
 
         print('第{}代，最优订单处理顺序为：{}，路径长度为：{}'.format(i, nat.best.code, nat.best.get_distance()))
-#     _final_output(nat.best)
-#
-#
-# def _final_output(best_s):
-#     print('最优的路线为：')
-#     path_num = len(best_s.code) * 2 + 1  # 总行进路线数
-#     _print_path(1, '起始点', best_s.orders[best_s.code[0]].offset.atm_name)
-#     for co in best_s.code[:-1]:
-#         _print_path(index,best_s.orders[co].offset,)
-#
-#
-# def _print_path(i, st, en):
-#     print('{}. 从{},到{}.'.format(i, st, en)
+    _final_output(nat.best)
+
+
+def _final_output(best_s):
+    print('最优的路线为：')
+    orders, code = best_s.orders, best_s.code
+    _print_path('起始点', orders[code[0]].offset.atm_name)
+    for i, co in enumerate(code[:-1]):
+        _print_path(orders[co].offset.atm_name, orders[co].destination.atm_name)
+        _print_path(orders[co].destination.atm_name, orders[code[i + 1]].offset.atm_name)
+    _print_path(orders[code[-1]].offset.atm_name, orders[code[-1]].destination.atm_name)
+    _print_path(orders[code[-1]].destination.atm_name, '起始点')
+    print('行进总距离为：{}'.format(best_s.get_distance()))
+index = 0  # 记录路线顺序
+def _print_path(st, en):
+    global index
+    index += 1
+    print('{}. 从{},到{}.'.format(index, st, en))
