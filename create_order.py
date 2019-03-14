@@ -49,5 +49,5 @@ def create_order(ct, atm_dic):
 
 def _print_ords(ords):
     print('共随机生成：{}个订单，分别是： '.format(len(ords)))
-    for index, ord in enumerate(ords, 1):
+    for index, ord in enumerate(ords):
         print('订单{}：{}'.format(index, ord))

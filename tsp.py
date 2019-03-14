@@ -19,7 +19,7 @@ class Solution():  # 一个Solution实例对应一个染色体
         self.orders = orders  # list
         self.__amount = len(self.orders)  # 当前订单数
         self.start_point = start_p  # 起始点
-        self.__distance = float('inf')  # 总距离
+        self.__distance = None  # 总距离
         self.__vari_code = None  # 变异后的code
         self.__vari_distance = None  # 变异后的总距离
 
@@ -46,8 +46,10 @@ class Solution():  # 一个Solution实例对应一个染色体
         if n1 > n2: n1, n2 = n2, n1
 
         # 因为code为list类型，一定不能直接传参，必须传回一个code的copy，防止互相污染
-        fa = Solution(self.code.copy(), self.orders, self.start_point)
-        mo = Solution(other.code.copy(), other.orders, other.start_point)
+        # fa = Solution(self.code.copy(), self.orders, self.start_point)
+        # mo = Solution(other.code.copy(), other.orders, other.start_point)
+        fa = self.copy()
+        mo = other.copy()
 
         while n1 <= n2:
             p, q = self.code.index(other.code[n1]), other.code.index(self.code[n1]),
@@ -106,6 +108,10 @@ class Solution():  # 一个Solution实例对应一个染色体
     def get_fitness(self):
         return 1 / self.__distance
 
+    def copy(self):
+        co = Solution(self.code.copy(), self.orders, self.start_point)
+        return co
+
 
 class Select():  # god对象，用来选择更好的染色体,即更快捷的路线
     def __init__(self, orders, start_point):
@@ -133,13 +139,15 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
         self._cam_fitness()
 
     def _cam_fitness(self):  # 计算每个染色体的fitness
-        self.best = self.group[0]
+        best = self.group[0]
         self.__total_fit = self.group[0].fitness()
         for so in self.group[1:]:
-            so.fitness()
-            self.__total_fit += so.fitness()
-            if self.best.get_fitness() < so.get_fitness():
-                self.best = so
+            if so.get_distance() is None:  # 还未计算fitness
+                so.fitness()
+            self.__total_fit += so.get_fitness()
+            if best.get_fitness() < so.get_fitness():
+                best = so
+        self.best = best
 
     def select(self):  # 选择函数
         # 先按照基因的适应度排序
@@ -150,7 +158,7 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
         c_num = self.__size // 2
         for _ in range(c_num):
             f = np.random.choice(self.group, p=prob)
-            while True:
+            while True:  # 确保 f,m 不相等
                 m = np.random.choice(self.group, p=prob)
                 if m != f:
                     break
@@ -158,11 +166,11 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
             next_gene.append(son)
 
         # 挑选剩下的 size /2 -1 个染色体
-        # 挑选的方式为随机挑选两个染色体，然后加入适应值大的那个
+        # 挑选的方式为随机挑选两个染色体，然后复制适应值大的那个加入下一代
         for _ in range(self.__size - c_num - 1):
             s0, s1 = sample(self.group, k=2)
             s = s0 if s0.get_fitness() > s1.get_fitness() else s1
-            next_gene.append(s)
+            next_gene.append(s.copy())
 
         # 变异，以一定的概率挑选子代进行变异，防止陷入局部最优
         vari_num = vr * self.__size  # 变异的数量
@@ -171,8 +179,7 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
             va_s.variation()  # 变异
 
         next_gene.append(self.best)  # 挑选父代中适应度最高的直接加入子代，精英选择
-
-        #此时，子代的数量已和上一代一致
+        # 此时，子代的数量已和上一代一致
         self.group = next_gene  # 新老交替
         self._cam_fitness()  # 重新计算每个染色体的fitness
 
@@ -191,3 +198,16 @@ def tsp(orders, start_point):
             best_dis, equal_time = nat.best.get_distance(), 0
 
         print('第{}代，最优订单处理顺序为：{}，路径长度为：{}'.format(i, nat.best.code, nat.best.get_distance()))
+#     _final_output(nat.best)
+#
+#
+# def _final_output(best_s):
+#     print('最优的路线为：')
+#     path_num = len(best_s.code) * 2 + 1  # 总行进路线数
+#     _print_path(1, '起始点', best_s.orders[best_s.code[0]].offset.atm_name)
+#     for co in best_s.code[:-1]:
+#         _print_path(index,best_s.orders[co].offset,)
+#
+#
+# def _print_path(i, st, en):
+#     print('{}. 从{},到{}.'.format(i, st, en)
