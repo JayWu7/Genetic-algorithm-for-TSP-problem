@@ -1,6 +1,6 @@
 from random import randint, shuffle, choice, sample
 from calculate_distance import get_distance_hav
-from settings import EVOLUTION_TIMES as et, VARIATION_RATE as vr, STOP_TIMES as st
+from settings import EVOLUTION_TIMES as et, VARIATION_RATE_1 as vr, STOP_TIMES as st
 import numpy as np
 
 
@@ -31,12 +31,11 @@ class Solution():  # 一个Solution实例对应一个染色体
 
         v = randint(0, self.__amount - 1)  # 要变异的基因下标 and 一个基因
         ch = self.code.index(v)
-        self.__vari_code = self.code.copy()
-        self.__vari_code[v], self.__vari_code[ch] = self.code[ch], self.code[v]
-
-        if self._fitness(flag=False) > self.get_fitness():  # 变异后适应性增强  #可改写减少时间消耗
-            self.code[:] = self.__vari_code  # 注意不是直接等于
-            self.__distance = self.__vari_distance
+        # self.__vari_code = self.code.copy()
+        self.code[v], self.code[ch] = self.code[ch], self.code[v]
+        # if self._fitness(flag=False) > self.get_fitness():  # 变异后适应性增强  #可改写减少时间消耗
+        #     self.code[:] = self.__vari_code  # 注意不是直接等于
+        #     self.__distance = self.__vari_distance
 
     def __mul__(self, other):  # 重载'*'运算符,表示交叉函数
         # = randrange(1, self.__amount // 2)
@@ -145,13 +144,11 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
     def select(self):  # 选择函数
         # 先按照基因的适应度排序
         next_gene = list()  # 下一代
-        next_gene.append(self.best)  # 挑选父代中适应度最高的直接加入子代，精英选择
-        # 按照fitness大小生成转盘，从group中随机挑选父母，直到生成了size/2 个子代
-
+        # 按照fitness大小生成转盘，从group中随机挑选父母，直到生成了size//2 个子代
         prob = [s.get_fitness() / self.__total_fit for s in self.group]
 
-        for _ in range(self.__size // 2):
-
+        c_num = self.__size // 2
+        for _ in range(c_num):
             f = np.random.choice(self.group, p=prob)
             while True:
                 m = np.random.choice(self.group, p=prob)
@@ -162,8 +159,7 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
 
         # 挑选剩下的 size /2 -1 个染色体
         # 挑选的方式为随机挑选两个染色体，然后加入适应值大的那个
-
-        for _ in range(self.__size - len(next_gene)):
+        for _ in range(self.__size - c_num - 1):
             s0, s1 = sample(self.group, k=2)
             s = s0 if s0.get_fitness() > s1.get_fitness() else s1
             next_gene.append(s)
@@ -174,21 +170,24 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
             va_s = choice(next_gene)
             va_s.variation()  # 变异
 
+        next_gene.append(self.best)  # 挑选父代中适应度最高的直接加入子代，精英选择
+
+        #此时，子代的数量已和上一代一致
         self.group = next_gene  # 新老交替
         self._cam_fitness()  # 重新计算每个染色体的fitness
 
 
 def tsp(orders, start_point):
     nat = Select(orders, start_point)  # Select对象，nature
-    best, equal_time = nat.best, 0
-    print('随机生成的第一代，最优订单处理顺序为：{}，路径长度为：{}'.format(nat.best.code, best.get_distance()))
+    best_dis, equal_time = nat.best.get_distance(), 0
+    print('随机生成的第一代，最优订单处理顺序为：{}，路径长度为：{}'.format(nat.best.code, best_dis))
     for i in range(2, et + 2):
         nat.select()
-        if best == nat.best:
+        if best_dis == nat.best.get_distance():
             equal_time += 1
             if equal_time == st:
                 break
         else:
-            best, equal_time = nat.best, 0
+            best_dis, equal_time = nat.best.get_distance(), 0
 
         print('第{}代，最优订单处理顺序为：{}，路径长度为：{}'.format(i, nat.best.code, nat.best.get_distance()))

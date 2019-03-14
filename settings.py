@@ -55,10 +55,14 @@ parameters = {
 STORE_DIRECTORY = './map_data'
 
 # 遗传算法进化的次数
-EVOLUTION_TIMES = 100
+EVOLUTION_TIMES = 200
 
 #连续多少次最佳路线相同，则认为找到了最优解，退出进化
-STOP_TIMES = 15
+STOP_TIMES = 30
 
 # 变异概率
 VARIATION_RATE = 0.3
+
+#修改变异函数后，设定的变异概率
+VARIATION_RATE_1 = 0.4
+
