@@ -1,5 +1,4 @@
 from settings import citys, STORE_DIRECTORY
-import numpy as np
 from collections import OrderedDict
 import os
 import json
@@ -12,7 +11,6 @@ class City():
             city = citys[city_name.upper()]
             self.name = city_name
             self.name_zh = city['CHINESE_NAME']
-            self.map = np.zeros(city['MAP_SIZE'])
             self.banks_amount = city['BANKS_AMOUNT']
             self.peak_atm = city['PEAK_ATMS']
             self.start_point = city['START_POINT']

@@ -38,16 +38,13 @@ class Solution():  # 一个Solution实例对应一个染色体
         #     self.__distance = self.__vari_distance
 
     def __mul__(self, other):  # 重载'*'运算符,表示交叉函数
-        # = randrange(1, self.__amount // 2)
-        # 随机选择一段编码，将这段编码中的基因替换为other.code对应的此段编码的基因
 
+        # 随机选择一段编码，将这段编码中的基因替换为other.code对应的此段编码的基因
         n1 = randint(0, self.__amount - 1)
         n2 = randint(0, self.__amount - 1)
         if n1 > n2: n1, n2 = n2, n1
 
         # 因为code为list类型，一定不能直接传参，必须传回一个code的copy，防止互相污染
-        # fa = Solution(self.code.copy(), self.orders, self.start_point)
-        # mo = Solution(other.code.copy(), other.orders, other.start_point)
         fa = self.copy()
         mo = other.copy()
 
@@ -77,12 +74,11 @@ class Solution():  # 一个Solution实例对应一个染色体
         la_dis = self._get_d_start(last_atm)  # 从最后一个atm又回到出发点的距离
         final_ord = self.orders[self.code[-1]]  # 最后一个订单 两atm之间的距离
         final_ord_dis = final_ord.offset.get_distance_AB(last_atm)
-        distance = fir_dis + sum(self._generate_path(code)) + la_dis + final_ord_dis
+        distance = fir_dis + sum(self._generate_path(code)) + final_ord_dis + la_dis
         if flag:
             self.__distance = distance
         else:
             self.__vari_distance = distance
-
         return 1 / self.__distance  # 以距离的倒数作为适应系数
 
     def _get_d_start(self, atm):  # 计算某个atm距离初始点的位置
@@ -120,6 +116,7 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
         self.start_point = start_point
         self.__len_orders = len(self.orders)
         self.__size = self.__len_orders // 2 + 1  # 种群数量
+        # self.__size = self.__len_orders
         self.group = []  # 解决方案列表，即染色体列表
         self.best = None  # 最好的染色体
         self.__total_fit = None  # group中的染色体适应度总和
@@ -134,7 +131,7 @@ class Select():  # god对象，用来选择更好的染色体,即更快捷的路
             shuffle(code)
             if code not in self.group:
                 amount += 1
-                c = code.copy()
+                c = code.copy()   #不能直接使用code传参
                 solution = Solution(c, self.orders, self.start_point)
                 self.group.append(solution)
         self._cam_fitness()
@@ -205,6 +202,8 @@ def tsp(orders, start_point):
 def _final_output(best_s):
     print('最优的路线为：')
     orders, code = best_s.orders, best_s.code
+    global index
+    index = 0
     _print_path('起始点', orders[code[0]].offset.atm_name)
     for i, co in enumerate(code[:-1]):
         _print_path(orders[co].offset.atm_name, orders[co].destination.atm_name)
@@ -212,7 +211,11 @@ def _final_output(best_s):
     _print_path(orders[code[-1]].offset.atm_name, orders[code[-1]].destination.atm_name)
     _print_path(orders[code[-1]].destination.atm_name, '起始点')
     print('行进总距离为：{}'.format(best_s.get_distance()))
+
+
 index = 0  # 记录路线顺序
+
+
 def _print_path(st, en):
     global index
     index += 1

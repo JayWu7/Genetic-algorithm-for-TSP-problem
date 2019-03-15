@@ -28,8 +28,8 @@ citys = {
 EARTH_RADIUS = 6371  # 地球平均半径，6371km
 
 # 爬虫参数
-city = '上海'  # 每次爬一个城市，在这里修改
-bank = '中国农业银行'  # 设定银行
+city = '无锡'  # 每次爬一个城市，在这里修改
+bank = '中国银行'  # 设定银行
 
 ak = 'rv8dBig9OwEho07yjaAVsAPTl29QHehq'
 parameters = {
@@ -64,5 +64,5 @@ STOP_TIMES = 30
 VARIATION_RATE = 0.3
 
 #修改变异函数后，设定的变异概率
-VARIATION_RATE_1 = 0.4
+VARIATION_RATE_1 = 0.3
 

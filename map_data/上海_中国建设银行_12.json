@@ -1,0 +1,22 @@
+{
+    "status":0,
+    "message":"ok",
+    "total":400,
+    "results":[
+        {
+            "name":"中国建设银行(安图路支行)",
+            "location":{
+                "lat":31.298594,
+                "lng":121.54743
+            },
+            "address":"上海市杨浦区安图路92、98号",
+            "province":"上海市",
+            "city":"上海市",
+            "area":"杨浦区",
+            "street_id":"92c8b04f90e4f1675e0d02a3",
+            "telephone":"(021)65662077",
+            "detail":1,
+            "uid":"92c8b04f90e4f1675e0d02a3"
+        }
+    ]
+}

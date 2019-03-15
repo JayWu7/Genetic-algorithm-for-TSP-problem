@@ -6,6 +6,8 @@ from tsp import tsp
 def main():
     while True:
         cn = input('请输入要调度的城市名拼音：')
+        if cn == 'q':
+            break
         try:
             city = City(city_name=cn)  # 生成城市和atms对象
         except KeyError as e:

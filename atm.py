@@ -18,6 +18,3 @@ class Atm():
         lat1 = other.location['lat']
         lng1 = other.location['lng']
         return get_distance_hav(lat0, lng0, lat1, lng1)
-
-# def __repr__(self):
-#     print()
