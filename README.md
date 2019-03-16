@@ -1,7 +1,7 @@
 # Genetic-algorithm-for-TSP-problem
 使用遗传算法解决TSP问题
 
-#各文件简介
+# 各文件简介
 
 0.本项目是一到算法题的解法，具体查看 算法题.pdf
 
@@ -29,7 +29,7 @@
 8.调度各个文件 main.py
   调度并启动
 
-#启动方法
+# 启动方法
   run main.py
   如果要更新数据集，请到settings.py 中，修改你要爬取的城市名和银行名：
  
